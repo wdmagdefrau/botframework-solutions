@@ -51,7 +51,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestaurantBooking", "experi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsSkill", "experimental\skills\newsskill\NewsSkill.csproj", "{A7FB024B-A18F-4B0D-865D-313DD941E581}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneSkill", "skills\phoneskill\phoneskill\PhoneSkill.csproj", "{44C6340E-47F8-4A45-B2E5-A1BA9DC04AF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneSkill", "skills\phoneskill\phoneskill\PhoneSkill.csproj", "{44C6340E-47F8-4A45-B2E5-A1BA9DC04AF8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneSkillTest", "skills\phoneskill\phoneskilltest\PhoneSkillTest.csproj", "{050A11CA-E5B6-4A30-919B-96A38370A00C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -123,6 +125,10 @@ Global
 		{44C6340E-47F8-4A45-B2E5-A1BA9DC04AF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44C6340E-47F8-4A45-B2E5-A1BA9DC04AF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44C6340E-47F8-4A45-B2E5-A1BA9DC04AF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{050A11CA-E5B6-4A30-919B-96A38370A00C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{050A11CA-E5B6-4A30-919B-96A38370A00C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{050A11CA-E5B6-4A30-919B-96A38370A00C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{050A11CA-E5B6-4A30-919B-96A38370A00C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -149,6 +155,7 @@ Global
 		{43529B7E-B96C-4D9A-97FA-9D42CA9D7FF9} = {D47AE889-7F23-4025-836E-3ACD2D060895}
 		{A7FB024B-A18F-4B0D-865D-313DD941E581} = {D47AE889-7F23-4025-836E-3ACD2D060895}
 		{44C6340E-47F8-4A45-B2E5-A1BA9DC04AF8} = {35B7FB90-4866-40C9-AD92-CEB5784CF034}
+		{050A11CA-E5B6-4A30-919B-96A38370A00C} = {35B7FB90-4866-40C9-AD92-CEB5784CF034}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7569C2D0-1323-45B5-8CFF-3ECACD9E0B82}
