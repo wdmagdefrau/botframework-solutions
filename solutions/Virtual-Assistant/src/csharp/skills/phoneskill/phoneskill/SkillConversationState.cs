@@ -43,12 +43,21 @@ namespace PhoneSkill
         /// </value>
         public ContactSearchResult ContactResult { get; set; }
 
+        /// <summary>
+        /// Gets or sets the final phone number to call.
+        /// </summary>
+        /// <value>
+        /// The final phone number to call.
+        /// </value>
+        public string PhoneNumber { get; set; }
+
         public void Clear()
         {
             Token = string.Empty;
             SourceOfContacts = null;
             LuisResult = new PhoneLU();
             ContactResult = new ContactSearchResult();
+            PhoneNumber = string.Empty;
         }
     }
 }

@@ -20,10 +20,18 @@ namespace PhoneSkill.Common
         {
             var entities = state.LuisResult.Entities;
             var entitiesForSearch = new List<InstanceData>();
-            entitiesForSearch.AddRange(entities._instance.contactName);
-            entitiesForSearch.AddRange(entities._instance.contactRelation);
+            if (entities._instance.contactName != null)
+            {
+                entitiesForSearch.AddRange(entities._instance.contactName);
+            }
+
+            if (entities._instance.contactRelation != null)
+            {
+                entitiesForSearch.AddRange(entities._instance.contactRelation);
+            }
+
             entitiesForSearch = SortAndRemoveOverlappingEntities(entitiesForSearch);
-            var searchQuery = string.Join(" ", entitiesForSearch);
+            var searchQuery = string.Join(" ", entitiesForSearch.Select(entity => entity.Text));
 
             IList<ContactCandidate> contacts;
             if (state.ContactResult.Matches.Any())
@@ -48,6 +56,18 @@ namespace PhoneSkill.Common
 
             state.ContactResult.SearchQuery = searchQuery;
             state.ContactResult.Matches = matches;
+
+            if (!state.PhoneNumber.Any())
+            {
+                if (state.ContactResult.Matches.Count == 1 && state.ContactResult.Matches[0].PhoneNumbers.Count == 1)
+                {
+                    state.PhoneNumber = state.ContactResult.Matches[0].PhoneNumbers[0].Number;
+                }
+                else if (entities.phoneNumber != null && entities.phoneNumber.Any())
+                {
+                    state.PhoneNumber = string.Join(" ", entities.phoneNumber);
+                }
+            }
         }
 
         private List<InstanceData> SortAndRemoveOverlappingEntities(List<InstanceData> entities)

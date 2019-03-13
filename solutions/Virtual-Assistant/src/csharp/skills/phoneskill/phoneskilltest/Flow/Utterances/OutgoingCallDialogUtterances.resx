@@ -117,10 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="MessagePromptResponse" xml:space="preserve">
-    <value>this is a message</value>
+  <data name="OutgoingCallContactName" xml:space="preserve">
+    <value>call bob</value>
   </data>
-  <data name="Trigger" xml:space="preserve">
+  <data name="OutgoingCallNoEntities" xml:space="preserve">
     <value>make a call</value>
+  </data>
+  <data name="OutgoingCallPhoneNumber" xml:space="preserve">
+    <value>call 0118 999 88199 9119 725 3</value>
+  </data>
+  <data name="RecipientContactName" xml:space="preserve">
+    <value>bob</value>
+  </data>
+  <data name="RecipientPhoneNumber" xml:space="preserve">
+    <value>0118 999 88199 9119 725 3</value>
   </data>
 </root>

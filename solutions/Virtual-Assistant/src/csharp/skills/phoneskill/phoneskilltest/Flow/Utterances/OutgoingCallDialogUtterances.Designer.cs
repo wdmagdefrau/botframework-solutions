@@ -61,20 +61,47 @@ namespace PhoneSkillTest.Flow.Utterances {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to this is a message.
+        ///   Looks up a localized string similar to call bob.
         /// </summary>
-        internal static string MessagePromptResponse {
+        internal static string OutgoingCallContactName {
             get {
-                return ResourceManager.GetString("MessagePromptResponse", resourceCulture);
+                return ResourceManager.GetString("OutgoingCallContactName", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to make a call.
         /// </summary>
-        internal static string Trigger {
+        internal static string OutgoingCallNoEntities {
             get {
-                return ResourceManager.GetString("Trigger", resourceCulture);
+                return ResourceManager.GetString("OutgoingCallNoEntities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to call 0118 999 88199 9119 725 3.
+        /// </summary>
+        internal static string OutgoingCallPhoneNumber {
+            get {
+                return ResourceManager.GetString("OutgoingCallPhoneNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to bob.
+        /// </summary>
+        internal static string RecipientContactName {
+            get {
+                return ResourceManager.GetString("RecipientContactName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0118 999 88199 9119 725 3.
+        /// </summary>
+        internal static string RecipientPhoneNumber {
+            get {
+                return ResourceManager.GetString("RecipientPhoneNumber", resourceCulture);
             }
         }
     }

@@ -12,12 +12,16 @@ using Microsoft.Bot.Solutions.Telemetry;
 using Microsoft.Bot.Solutions.Testing;
 using Microsoft.Bot.Solutions.Testing.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PhoneSkill.Common;
 using PhoneSkill.Dialogs.Main.Resources;
 using PhoneSkill.Dialogs.OutgoingCall.Resources;
 using PhoneSkill.Dialogs.Shared.Resources;
+using PhoneSkill.ServiceClients;
 using PhoneSkillTest.Flow.LuisTestUtils;
+using PhoneSkillTest.TestDouble;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
 
@@ -39,6 +43,8 @@ namespace PhoneSkillTest.Flow
 
         public IBackgroundTaskQueue BackgroundTaskQueue { get; set; }
 
+        public IServiceManager ServiceManager { get; set; }
+
         [TestInitialize]
         public override void Initialize()
         {
@@ -59,9 +65,14 @@ namespace PhoneSkillTest.Flow
                 }
             });
 
-            Services.AuthenticationConnections.Add("Google", "Google");
+            Services.AuthenticationConnections.Add("Azure Active Directory v2", "Azure Active Directory v2");
+
+            var fakeServiceManager = new FakeServiceManager();
+            builder.RegisterInstance<IServiceManager>(fakeServiceManager);
+            ServiceManager = fakeServiceManager;
 
             builder.RegisterInstance(new BotStateSet(UserState, ConversationState));
+
             Container = builder.Build();
 
             ResponseManager = new ResponseManager(
@@ -87,7 +98,7 @@ namespace PhoneSkillTest.Flow
 
         public override IBot BuildBot()
         {
-            return new PhoneSkill.PhoneSkill(Services, EndpointService, ConversationState, UserState, ProactiveState, TelemetryClient, BackgroundTaskQueue, true, ResponseManager, null);
+            return new PhoneSkill.PhoneSkill(Services, EndpointService, ConversationState, UserState, ProactiveState, TelemetryClient, BackgroundTaskQueue, true, ResponseManager, ServiceManager);
         }
 
         protected Action<IActivity> ShowAuth()
@@ -107,6 +118,25 @@ namespace PhoneSkillTest.Flow
                 AuthenticationProvider = OAuthProvider.AzureAD
             };
             return new Activity(ActivityTypes.Event, name: "tokens/response", value: providerTokenResponse);
+        }
+
+        protected Action<IActivity> Message(string templateId, StringDictionary tokens = null)
+        {
+            return activity =>
+            {
+                Assert.AreEqual("message", activity.Type);
+                var messageActivity = activity.AsMessageActivity();
+
+                // Work around a bug in ParseReplies.
+                if (tokens == null)
+                {
+                    tokens = new StringDictionary();
+                }
+
+                var expectedTexts = ParseReplies(templateId, tokens);
+                var actualText = messageActivity.Text;
+                CollectionAssert.Contains(expectedTexts, actualText, $"Expected one of: {expectedTexts.ToPrettyString()}\nActual: {actualText}\n");
+            };
         }
     }
 }

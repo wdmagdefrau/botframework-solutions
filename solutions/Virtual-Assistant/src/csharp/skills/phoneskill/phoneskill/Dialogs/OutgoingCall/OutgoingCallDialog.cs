@@ -53,7 +53,7 @@ namespace PhoneSkill.Dialogs.OutgoingCall
             var contactProvider = GetContactProvider(state);
             contactFilter.Filter(state, contactProvider);
 
-            if (state.ContactResult.Matches.Count != 0)
+            if (state.ContactResult.Matches.Count != 0 || !string.IsNullOrEmpty(state.PhoneNumber))
             {
                 return await stepContext.NextAsync();
             }
@@ -85,10 +85,22 @@ namespace PhoneSkill.Dialogs.OutgoingCall
         private async Task<DialogTurnResult> ExecuteCall(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var state = await ConversationStateAccessor.GetAsync(stepContext.Context);
+            var contactProvider = GetContactProvider(state);
+            contactFilter.Filter(state, contactProvider);
+
+            string contactOrPhoneNumber;
+            if (state.ContactResult.Matches.Count == 1)
+            {
+                contactOrPhoneNumber = state.ContactResult.Matches[0].Name;
+            }
+            else
+            {
+                contactOrPhoneNumber = state.PhoneNumber;
+            }
 
             var tokens = new StringDictionary
             {
-                { "contactOrPhoneNumber", stepContext.Result.ToString() },
+                { "contactOrPhoneNumber", contactOrPhoneNumber },
             };
 
             var response = ResponseManager.GetResponse(OutgoingCallResponses.ExecuteCall, tokens);
