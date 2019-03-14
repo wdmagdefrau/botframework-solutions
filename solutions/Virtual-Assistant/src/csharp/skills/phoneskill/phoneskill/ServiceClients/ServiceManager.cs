@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
-using Microsoft.Bot.Solutions.Skills;
+using Microsoft.Bot.Builder.Solutions.Skills;
 using PhoneSkill.Common;
 using PhoneSkill.Model;
 using PhoneSkill.ServiceClients.GoogleAPI;
