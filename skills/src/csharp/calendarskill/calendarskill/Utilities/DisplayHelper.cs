@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CalendarSkill.Responses.Shared;
 using Microsoft.Bot.Builder.Solutions.Resources;
@@ -25,21 +26,30 @@ namespace CalendarSkill.Utilities
             return participantString;
         }
 
-        public static string ToDisplayParticipantsStringSummaryInCard(List<Attendee> participants)
+        public static string ToDisplayMeetingDuration(TimeSpan timeSpan)
         {
-            // return the multiple names with "Alice + 2 more"
-            if (participants == null || participants.Count() == 0)
+            if (timeSpan == null)
             {
-                return CalendarCommonStrings.NoAttendees;
+                return string.Empty;
             }
 
-            var participantString = string.IsNullOrEmpty(participants[0].DisplayName) ? participants[0].Address : participants[0].DisplayName;
-            if (participants.Count > 1)
+            if (timeSpan.TotalHours < 1)
             {
-                participantString += string.Format(CommonStrings.RecipientsSummary, participants.Count - 1);
+                return string.Format(CalendarCommonStrings.ShortDisplayDurationMinute, timeSpan.Minutes);
             }
-
-            return participantString;
+            else
+            {
+                if (timeSpan.Minutes == 0)
+                {
+                    return string.Format(CalendarCommonStrings.ShortDisplayDurationHour, timeSpan.Hours);
+                }
+                else
+                {
+                    string result = string.Format(CalendarCommonStrings.ShortDisplayDurationHour, timeSpan.Hours);
+                    result += string.Format(CalendarCommonStrings.ShortDisplayDurationMinute, timeSpan.Minutes);
+                    return result;
+                }
+            }
         }
     }
 }

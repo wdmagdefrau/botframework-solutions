@@ -672,7 +672,7 @@ namespace CalendarSkill.Dialogs
                                 { "EventName", nextEventList[0].Title },
                                 { "EventStartTime", TimeConverter.ConvertUtcToUserTime(nextEventList[0].StartTime, state.GetUserTimeZone()).ToString("h:mm tt") },
                                 { "EventEndTime", TimeConverter.ConvertUtcToUserTime(nextEventList[0].EndTime, state.GetUserTimeZone()).ToString("h:mm tt") },
-                                { "EventDuration", nextEventList[0].ToDurationString() },
+                                //{ "EventDuration", nextEventList[0].ToDurationString() },
                                 { "EventLocation", nextEventList[0].Location },
                             };
 

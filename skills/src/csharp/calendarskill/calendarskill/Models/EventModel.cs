@@ -872,9 +872,15 @@ namespace CalendarSkill.Models
             };
         }
 
-        public string ToDurationString()
+        public string ToDisplayDurationString()
         {
-            var t = EndTime.Subtract(StartTime);
+            TimeSpan t = EndTime.Subtract(StartTime);
+            return DisplayHelper.ToDisplayMeetingDuration(t);
+        }
+
+        public string ToSpeechDurationString()
+        {
+            TimeSpan t = EndTime.Subtract(StartTime);
             return SpeakHelper.ToSpeechMeetingDuration(t);
         }
 

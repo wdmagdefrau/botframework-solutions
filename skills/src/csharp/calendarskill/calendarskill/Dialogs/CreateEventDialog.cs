@@ -13,11 +13,14 @@ using CalendarSkill.Services;
 using CalendarSkill.Utilities;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Builder.Solutions.Extensions;
 using Microsoft.Bot.Builder.Solutions.Resources;
 using Microsoft.Bot.Builder.Solutions.Responses;
 using Microsoft.Bot.Builder.Solutions.Util;
+using Microsoft.Bot.Schema;
+using Microsoft.Recognizers.Text;
 using Microsoft.Recognizers.Text.DateTime;
 using static CalendarSkill.Models.CreateEventStateModel;
 
@@ -40,14 +43,15 @@ namespace CalendarSkill.Dialogs
             {
                 GetAuthToken,
                 AfterGetAuthToken,
-                CollectAttendees,
-                CollectTitle,
-                CollectContent,
+                //CollectAttendees,
+                //CollectTitle,
+                //CollectContent,
                 CollectStartDate,
-                CollectStartTime,
-                CollectDuration,
-                CollectLocation,
-                ConfirmBeforeCreate,
+                //CollectStartTime,
+                //CollectDuration,
+                //CollectLocation,
+                //ConfirmBeforeCreate,
+                SuggestNewDateTime,
                 CreateEvent,
             };
 
@@ -86,6 +90,7 @@ namespace CalendarSkill.Dialogs
             AddDialog(new DurationPrompt(Actions.DurationPromptForCreate));
             AddDialog(new GetRecreateInfoPrompt(Actions.GetRecreateInfoPrompt));
             AddDialog(new FindContactDialog(settings, services, responseManager, accessor, serviceManager, telemetryClient));
+            AddDialog(new ChoicePrompt("SuggestDateTimeChoice", null, Culture.English) { Style = ListStyle.Inline, ChoiceOptions = new ChoiceFactoryOptions { InlineSeparator = ". ", InlineOr = ", or ", InlineOrMore = ", or ", IncludeNumbers = false } });
 
             // Set starting dialog for component
             InitialDialogId = Actions.CreateEvent;
@@ -234,6 +239,46 @@ namespace CalendarSkill.Dialogs
                 {
                     return await sc.NextAsync(cancellationToken: cancellationToken);
                 }
+            }
+            catch (Exception ex)
+            {
+                await HandleDialogExceptions(sc, ex);
+                return new DialogTurnResult(DialogTurnStatus.Cancelled, CommonUtil.DialogTurnResultCancelAllDialogs);
+            }
+        }
+
+        public async Task<DialogTurnResult> SuggestNewDateTime(WaterfallStepContext sc, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                await sc.Context.SendActivityAsync("I am sorry but we don’t have any field agents available at that time.");
+                var options = new PromptOptions()
+                {
+                    Choices = new List<Choice>(),
+                };
+                var choice1 = new Choice()
+                {
+                    Value = "Wednesday, May 8th, between 5:30 pm and 7:30 pm",
+                    Synonyms = new List<string> { "Wednesday", "May 8th" },
+                };
+                var choice2 = new Choice()
+                {
+                    Value = "Thursday, May 9th, between 2 and 4 pm",
+                    Synonyms = new List<string> { "Thursday", "May 9th" },
+                };
+                var choice3 = new Choice()
+                {
+                    Value = "next Monday, May 13th, between 4 pm and 6 pm",
+                    Synonyms = new List<string> { "next Monday", "May 13th" },
+                };
+
+                options.Choices.Add(choice1);
+                options.Choices.Add(choice2);
+                options.Choices.Add(choice3);
+
+                options.Prompt = new Activity(type: ActivityTypes.Message, text: "How about ");
+
+                return await sc.PromptAsync("SuggestDateTimeChoice", options);
             }
             catch (Exception ex)
             {
@@ -416,33 +461,32 @@ namespace CalendarSkill.Dialogs
             try
             {
                 var state = await Accessor.GetAsync(sc.Context, cancellationToken: cancellationToken);
-                var confirmResult = (bool)sc.Result;
-                if (confirmResult)
+                if (sc.Result != null && sc.Result is FoundChoice)
                 {
-                    var source = state.EventSource;
-                    var newEvent = new EventModel(source)
+                    var result = sc.Result as FoundChoice;
+
+                    var startTimeList = new List<DateTime>()
                     {
-                        Title = state.Title,
-                        Content = state.Content,
-                        Attendees = state.Attendees,
-                        StartTime = (DateTime)state.StartDateTime,
-                        EndTime = (DateTime)state.EndDateTime,
-                        TimeZone = TimeZoneInfo.Utc,
-                        Location = state.Location,
+                        new DateTime(2019, 5, 8, 17, 30, 0),
+                        new DateTime(2019, 5, 9, 14, 0, 0),
+                        new DateTime(2019, 5, 13, 16, 0, 0),
                     };
 
+                    var utcStartTime = TimeZoneInfo.ConvertTimeToUtc(startTimeList[result.Index], state.GetUserTimeZone());
+
+                    var newEvent = new EventModel(EventSource.Microsoft)
+                    {
+                        Title = "home visit",
+                        StartTime = utcStartTime,
+                        EndTime = utcStartTime.AddHours(2),
+                        TimeZone = TimeZoneInfo.Utc,
+                        Location = "Your home",
+                    };
+                    var replyMessage = await GetDetailMeetingResponseAsync(sc, newEvent, null, null);
                     var calendarService = ServiceManager.InitCalendarService(state.APIToken, state.EventSource);
                     if (await calendarService.CreateEvent(newEvent) != null)
                     {
-                        var tokens = new StringDictionary
-                        {
-                            { "Subject", state.Title },
-                        };
-
-                        newEvent.ContentPreview = state.Content;
-
-                        var replyMessage = await GetDetailMeetingResponseAsync(sc, newEvent, CreateEventResponses.EventCreated, tokens);
-
+                        await sc.Context.SendActivityAsync($"You are all set up. Jack, one of our field specialists, will be at your home, {result.Value}");
                         await sc.Context.SendActivityAsync(replyMessage, cancellationToken);
                     }
                     else
@@ -450,13 +494,9 @@ namespace CalendarSkill.Dialogs
                         var prompt = ResponseManager.GetResponse(CreateEventResponses.EventCreationFailed);
                         return await sc.PromptAsync(Actions.Prompt, new PromptOptions { Prompt = prompt }, cancellationToken);
                     }
+                }
 
-                    state.Clear();
-                }
-                else
-                {
-                    return await sc.ReplaceDialogAsync(Actions.GetRecreateInfo, options: sc.Options, cancellationToken: cancellationToken);
-                }
+                state.Clear();
 
                 return await sc.EndDialogAsync(true, cancellationToken);
             }
@@ -478,15 +518,17 @@ namespace CalendarSkill.Dialogs
             try
             {
                 var state = await Accessor.GetAsync(sc.Context, cancellationToken: cancellationToken);
-                if (state.CreateHasDetail && state.RecreateState != RecreateEventState.Time)
-                {
-                    return await sc.NextAsync(cancellationToken: cancellationToken);
-                }
+                //if (state.CreateHasDetail && state.RecreateState != RecreateEventState.Time)
+                //{
+                //    return await sc.NextAsync(cancellationToken: cancellationToken);
+                //}
 
-                return await sc.PromptAsync(Actions.DatePromptForCreate, new PromptOptions
+                sc.Context.SendActivityAsync("I can help setup time for a technician to visit you.");
+
+                return await sc.PromptAsync(Actions.Prompt, new PromptOptions
                 {
-                    Prompt = ResponseManager.GetResponse(CreateEventResponses.NoStartDate),
-                    RetryPrompt = ResponseManager.GetResponse(CreateEventResponses.NoStartDateRetry),
+                    Prompt = new Activity(type: ActivityTypes.Message, text: "When would be a good time for you to meet?"),
+                    RetryPrompt = new Activity(type: ActivityTypes.Message, text: "When would be a good time for you to meet?"),
                 }, cancellationToken);
             }
             catch (Exception ex)
@@ -500,56 +542,56 @@ namespace CalendarSkill.Dialogs
         {
             try
             {
-                var state = await Accessor.GetAsync(sc.Context, cancellationToken: cancellationToken);
-                if (state.CreateHasDetail && state.RecreateState != RecreateEventState.Time)
-                {
-                    var datetime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, state.GetUserTimeZone());
-                    state.StartDate.Add(datetime);
-                }
-                else
-                if (sc.Result != null)
-                {
-                    IList<DateTimeResolution> dateTimeResolutions = sc.Result as List<DateTimeResolution>;
-                    foreach (var resolution in dateTimeResolutions)
-                    {
-                        var dateTimeConvertType = resolution?.Timex;
-                        var dateTimeValue = resolution?.Value;
-                        if (dateTimeValue != null)
-                        {
-                            try
-                            {
-                                var dateTime = DateTime.Parse(dateTimeValue);
+                //var state = await Accessor.GetAsync(sc.Context, cancellationToken: cancellationToken);
+                //if (state.CreateHasDetail && state.RecreateState != RecreateEventState.Time)
+                //{
+                //    var datetime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, state.GetUserTimeZone());
+                //    state.StartDate.Add(datetime);
+                //}
+                //else
+                //if (sc.Result != null)
+                //{
+                //    IList<DateTimeResolution> dateTimeResolutions = sc.Result as List<DateTimeResolution>;
+                //    foreach (var resolution in dateTimeResolutions)
+                //    {
+                //        var dateTimeConvertType = resolution?.Timex;
+                //        var dateTimeValue = resolution?.Value;
+                //        if (dateTimeValue != null)
+                //        {
+                //            try
+                //            {
+                //                var dateTime = DateTime.Parse(dateTimeValue);
 
-                                if (dateTime != null)
-                                {
-                                    var isRelativeTime = IsRelativeTime(sc.Context.Activity.Text, dateTimeValue, dateTimeConvertType);
-                                    if (ContainsTime(dateTimeConvertType))
-                                    {
-                                        state.StartTime.Add(TimeZoneInfo.ConvertTime(dateTime, TimeZoneInfo.Local, state.GetUserTimeZone()));
-                                    }
+                //                if (dateTime != null)
+                //                {
+                //                    var isRelativeTime = IsRelativeTime(sc.Context.Activity.Text, dateTimeValue, dateTimeConvertType);
+                //                    if (ContainsTime(dateTimeConvertType))
+                //                    {
+                //                        state.StartTime.Add(TimeZoneInfo.ConvertTime(dateTime, TimeZoneInfo.Local, state.GetUserTimeZone()));
+                //                    }
 
-                                    // Workaround as DateTimePrompt only return as local time
-                                    if (isRelativeTime)
-                                    {
-                                        dateTime = new DateTime(
-                                            dateTime.Year,
-                                            dateTime.Month,
-                                            dateTime.Day,
-                                            DateTime.Now.Hour,
-                                            DateTime.Now.Minute,
-                                            DateTime.Now.Second);
-                                    }
+                //                    // Workaround as DateTimePrompt only return as local time
+                //                    if (isRelativeTime)
+                //                    {
+                //                        dateTime = new DateTime(
+                //                            dateTime.Year,
+                //                            dateTime.Month,
+                //                            dateTime.Day,
+                //                            DateTime.Now.Hour,
+                //                            DateTime.Now.Minute,
+                //                            DateTime.Now.Second);
+                //                    }
 
-                                    state.StartDate.Add(isRelativeTime ? TimeZoneInfo.ConvertTime(dateTime, TimeZoneInfo.Local, state.GetUserTimeZone()) : dateTime);
-                                }
-                            }
-                            catch (FormatException ex)
-                            {
-                                await HandleExpectedDialogExceptions(sc, ex);
-                            }
-                        }
-                    }
-                }
+                //                    state.StartDate.Add(isRelativeTime ? TimeZoneInfo.ConvertTime(dateTime, TimeZoneInfo.Local, state.GetUserTimeZone()) : dateTime);
+                //                }
+                //            }
+                //            catch (FormatException ex)
+                //            {
+                //                await HandleExpectedDialogExceptions(sc, ex);
+                //            }
+                //        }
+                //    }
+                //}
 
                 return await sc.EndDialogAsync(cancellationToken: cancellationToken);
             }

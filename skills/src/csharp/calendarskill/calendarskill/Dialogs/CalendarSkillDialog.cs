@@ -316,12 +316,8 @@ namespace CalendarSkill.Dialogs
                 Name = eventItem.OnlineMeetingUrl == null ? "CalendarDetailNoJoinButton" : "CalendarDetail",
                 Data = new CalendarDetailCardData()
                 {
-                    Title = eventItem.Title,
-                    DateTime = TimeConverter.ConvertUtcToUserTime(eventItem.StartTime, state.GetUserTimeZone()).ToString("MMMM M/d @ h:mm tt"),
-                    Location = eventItem.Location,
                     Content = eventItem.ContentPreview,
                     MeetingLink = eventItem.OnlineMeetingUrl,
-                    LocationIcon = string.IsNullOrEmpty(eventItem.Location) ? AdaptiveCardHelper.BlankIcon : AdaptiveCardHelper.LocationIcon
                 }
             };
 
@@ -329,15 +325,22 @@ namespace CalendarSkill.Dialogs
 
             var participantContainerCard = new Card()
             {
-                Name = eventItem.Attendees.Count > 5 ? "CalendarDetailContainerParticipantsMore" : "CalendarDetailContainerParticipantsLess",
+                Name = eventItem.Attendees.Count == 0 ? "CalendarDetailContainerNoParticipants" :
+                    eventItem.Attendees.Count > 5 ? "CalendarDetailContainerParticipantsMore" : "CalendarDetailContainerParticipantsLess",
                 Data = new CalendarDetailContainerCardData()
                 {
+                    Title = eventItem.Title,
+                    Date = TimeConverter.ConvertUtcToUserTime(eventItem.StartTime, state.GetUserTimeZone()).ToString("dddd M/d"),
+                    Time = TimeConverter.ConvertUtcToUserTime(eventItem.StartTime, state.GetUserTimeZone()).ToString("h:mm tt"),
+                    Location = eventItem.Location,
                     ParticipantPhoto1 = await GetPhotoByIndexAsync(dc.Context, eventItem.Attendees, 0),
                     ParticipantPhoto2 = await GetPhotoByIndexAsync(dc.Context, eventItem.Attendees, 1),
                     ParticipantPhoto3 = await GetPhotoByIndexAsync(dc.Context, eventItem.Attendees, 2),
                     ParticipantPhoto4 = await GetPhotoByIndexAsync(dc.Context, eventItem.Attendees, 3),
                     ParticipantPhoto5 = await GetPhotoByIndexAsync(dc.Context, eventItem.Attendees, 4),
-                    OmittedParticipantCount = eventItem.Attendees.Count - 4
+                    OmittedParticipantCount = eventItem.Attendees.Count - 4,
+                    LocationIcon = string.IsNullOrEmpty(eventItem.Location) ? AdaptiveCardHelper.BlankIcon : AdaptiveCardHelper.LocationIcon,
+                    Duration = eventItem.ToDisplayDurationString(),
                 }
             };
 
