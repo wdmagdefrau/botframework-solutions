@@ -41,8 +41,8 @@ namespace CalendarSkill.Dialogs
 
             var createEvent = new WaterfallStep[]
             {
-                GetAuthToken,
-                AfterGetAuthToken,
+                //GetAuthToken,
+                //AfterGetAuthToken,
                 //CollectAttendees,
                 //CollectTitle,
                 //CollectContent,
@@ -483,17 +483,8 @@ namespace CalendarSkill.Dialogs
                         Location = "Your home",
                     };
                     var replyMessage = await GetDetailMeetingResponseAsync(sc, newEvent, null, null);
-                    var calendarService = ServiceManager.InitCalendarService(state.APIToken, state.EventSource);
-                    if (await calendarService.CreateEvent(newEvent) != null)
-                    {
-                        await sc.Context.SendActivityAsync($"You are all set up. Jack, one of our field specialists, will be at your home, {result.Value}");
-                        await sc.Context.SendActivityAsync(replyMessage, cancellationToken);
-                    }
-                    else
-                    {
-                        var prompt = ResponseManager.GetResponse(CreateEventResponses.EventCreationFailed);
-                        return await sc.PromptAsync(Actions.Prompt, new PromptOptions { Prompt = prompt }, cancellationToken);
-                    }
+                    await sc.Context.SendActivityAsync($"You are all set up. Jack, one of our field specialists, will be at your home, {result.Value}");
+                    await sc.Context.SendActivityAsync(replyMessage, cancellationToken);
                 }
 
                 state.Clear();
