@@ -1,0 +1,149 @@
+[
+    {
+        "scope": "https://westus.api.cognitive.microsoft.com:443",
+        "method": "POST",
+        "path": "/luis/prediction/v3.0/apps/f7c2ee78-8679-4a3e-b384-0cd10c67e554/slots/production/predict?verbose=true&log=true&show-all-intents=false",
+        "body": {
+            "query": "Repeat",
+            "options": {
+                "preferExternalEntities": true
+            }
+        },
+        "status": 200,
+        "response": {
+            "query": "Repeat",
+            "prediction": {
+                "topIntent": "l_general",
+                "intents": {
+                    "l_general": {
+                        "score": 0.9988772,
+                        "childApp": {
+                            "topIntent": "Repeat",
+                            "intents": {
+                                "Repeat": {
+                                    "score": 0.981101632
+                                }
+                            },
+                            "entities": {
+                                "personName": [
+                                    "Repeat"
+                                ],
+                                "$instance": {
+                                    "personName": [
+                                        {
+                                            "type": "builtin.personName",
+                                            "text": "Repeat",
+                                            "startIndex": 0,
+                                            "length": 6,
+                                            "modelTypeId": 2,
+                                            "modelType": "Prebuilt Entity Extractor",
+                                            "recognitionSources": [
+                                                "model"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "entities": {}
+            }
+        },
+        "rawHeaders": [
+            "Cache-Control",
+            "no-store, proxy-revalidate, no-cache, max-age=0, private",
+            "Pragma",
+            "no-cache",
+            "Content-Length",
+            "417",
+            "Content-Type",
+            "application/json; charset=utf-8",
+            "Apim-Request-Id",
+            "0997a846-6246-4819-a0b7-d910c72b8561",
+            "Request-Id",
+            "0997a846-6246-4819-a0b7-d910c72b8561",
+            "CSP-Billing-Usage",
+            "CognitiveServices.LUIS.Transaction=2",
+            "Strict-Transport-Security",
+            "max-age=31536000; includeSubDomains; preload",
+            "X-Content-Type-Options",
+            "nosniff",
+            "X-Frame-Options",
+            "SAMEORIGIN",
+            "Date",
+            "Wed, 15 Jul 2020 16:37:14 GMT",
+            "Connection",
+            "close"
+        ]
+    },
+    {
+        "scope": "https://westus.api.cognitive.microsoft.com:443",
+        "method": "POST",
+        "path": "/luis/prediction/v3.0/apps/f7c2ee78-8679-4a3e-b384-0cd10c67e554/slots/production/predict?verbose=true&log=true&show-all-intents=false",
+        "body": {
+            "query": "Repeat",
+            "options": {
+                "preferExternalEntities": true
+            }
+        },
+        "status": 200,
+        "response": {
+            "query": "Repeat",
+            "prediction": {
+                "topIntent": "Repeat",
+                "intents": {
+                    "Repeat": {
+                        "score": 0.981101632
+                    }
+                },
+                "entities": {
+                    "personName": [
+                        "Repeat"
+                    ],
+                    "$instance": {
+                        "personName": [
+                            {
+                                "type": "builtin.personName",
+                                "text": "Repeat",
+                                "startIndex": 0,
+                                "length": 6,
+                                "modelTypeId": 2,
+                                "modelType": "Prebuilt Entity Extractor",
+                                "recognitionSources": [
+                                    "model"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        "rawHeaders": [
+            "Cache-Control",
+            "no-store, proxy-revalidate, no-cache, max-age=0, private",
+            "Pragma",
+            "no-cache",
+            "Content-Length",
+            "322",
+            "Content-Type",
+            "application/json; charset=utf-8",
+            "Apim-Request-Id",
+            "b2d22f57-9c24-4e80-acd7-6c67292f713f",
+            "Request-Id",
+            "b2d22f57-9c24-4e80-acd7-6c67292f713f",
+            "CSP-Billing-Usage",
+            "CognitiveServices.LUIS.Transaction=1",
+            "Strict-Transport-Security",
+            "max-age=31536000; includeSubDomains; preload",
+            "X-Content-Type-Options",
+            "nosniff",
+            "X-Frame-Options",
+            "SAMEORIGIN",
+            "Date",
+            "Wed, 15 Jul 2020 16:37:16 GMT",
+            "Connection",
+            "close"
+        ]
+    }
+]

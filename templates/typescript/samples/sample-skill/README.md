@@ -1,0 +1,1 @@
+Please refer to the Skill Template documentation for [deployment](https://microsoft.github.io/botframework-solutions/skills/tutorials/create-skill/typescript/4-provision-your-azure-resources/) and [customization](https://microsoft.github.io/botframework-solutions/skills/tutorials/customize-skill/typescript/1-intro/) instructions.

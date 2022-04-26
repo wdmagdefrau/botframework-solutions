@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Virtual Assistant", "Virtual Assistant", "{2499BB55-6DD4-423D-8194-41987F6F3C11}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtualAssistantSample", "VirtualAssistantSample\VirtualAssistantSample.csproj", "{2AF88C6C-2CF5-4F0B-A8FB-C0B2570BEE76}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtualAssistantSample.FunctionalTests", "VirtualAssistantSample.FunctionalTests\VirtualAssistantSample.FunctionalTests.csproj", "{FE71DA76-FAC1-483D-9460-95DFA8993F7A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtualAssistantSample.Tests", "VirtualAssistantSample.Tests\VirtualAssistantSample.Tests.csproj", "{EC7F0522-143F-4864-B398-92EBA95F7C63}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2AF88C6C-2CF5-4F0B-A8FB-C0B2570BEE76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AF88C6C-2CF5-4F0B-A8FB-C0B2570BEE76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AF88C6C-2CF5-4F0B-A8FB-C0B2570BEE76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AF88C6C-2CF5-4F0B-A8FB-C0B2570BEE76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE71DA76-FAC1-483D-9460-95DFA8993F7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE71DA76-FAC1-483D-9460-95DFA8993F7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE71DA76-FAC1-483D-9460-95DFA8993F7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE71DA76-FAC1-483D-9460-95DFA8993F7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC7F0522-143F-4864-B398-92EBA95F7C63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC7F0522-143F-4864-B398-92EBA95F7C63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC7F0522-143F-4864-B398-92EBA95F7C63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC7F0522-143F-4864-B398-92EBA95F7C63}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2AF88C6C-2CF5-4F0B-A8FB-C0B2570BEE76} = {2499BB55-6DD4-423D-8194-41987F6F3C11}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D9D0038C-86BC-40C9-816C-A3F40ACCC77B}
+	EndGlobalSection
+EndGlobal

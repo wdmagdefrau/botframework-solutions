@@ -1,0 +1,46 @@
+{
+  "defaultLocale": "en-us",
+  "cognitiveModels": {
+    "en-us": {
+      "dispatchModel": {
+        "appId": "f7c2ee78-8679-4a3e-b384-0cd10c67e554",
+        "type": "dispatch",
+        "region": "westus",
+        "authoringKey": "<--MOCK-VALUE-->",
+        "authoringRegion": "westus",
+        "name": "assistant_Dispatch",
+        "subscriptionKey": "<--MOCK-VALUE-->"
+      },
+      "languageModels": [
+        {
+          "authoringRegion": "westus",
+          "appId": "f7c2ee78-8679-4a3e-b384-0cd10c67e554",
+          "name": "assistant_general",
+          "id": "general",
+          "version": "0.1",
+          "authoringKey": "<--MOCK-VALUE-->",
+          "subscriptionKey": "<--MOCK-VALUE-->",
+          "region": "westus"
+        }
+      ],
+      "knowledgeBases": [
+        {
+          "hostname": "https://mbvatest-qnahost-gnbtdcv.azurewebsites.net/qnamaker",
+          "subscriptionKey": "<--MOCK-VALUE-->",
+          "kbId": "f7c2ee78-8679-4a3e-b384-0cd10c67e554",
+          "name": "chitchat",
+          "endpointKey": "<--MOCK-VALUE-->",
+          "id": "chitchat"
+        },
+        {
+          "hostname": "https://mbvatest-qnahost-gnbtdcv.azurewebsites.net/qnamaker",
+          "subscriptionKey": "<--MOCK-VALUE-->",
+          "kbId": "f7c2ee78-8679-4a3e-b384-0cd10c67e554",
+          "name": "faq",
+          "endpointKey": "<--MOCK-VALUE-->",
+          "id": "faq"
+        }
+      ]
+    }
+  }
+}
